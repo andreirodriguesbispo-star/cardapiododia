@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Cardápio do Dia</title>
+ <style>
+  :root{
+    /* PALETA "MENU PREMIUM" (dark + dourado) */
+    --bg:#0b0c10;
+    --bg2:#0f1118;
+    --card:#121520;
+    --card2:#151a28;
+    --text:#f2f4ff;
+    --muted:rgba(242,244,255,.68);
+    --line:rgba(255,255,255,.08);
+
+    --brand: #c9a24d;
+--brandDark: #a8822e;
+--brandSoft: rgba(201,162,77,.15);
+
+
+    --radius:18px;
+    --shadow: 0 18px 45px rgba(0,0,0,.45);
+
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  }
+
+  *{box-sizing:border-box}
+  body{
+  margin:0;
+  color:var(--text);
+
+  background:
+    linear-gradient(
+      rgba(11,12,16,.88),
+      rgba(11,12,16,.88)
+    ),
+    url("img/pattern1.jpg") center / cover no-repeat fixed;
+}
+
+
+  header{
+    position:sticky;top:0;z-index:10;
+    background:rgba(10,12,18,.78);
+    backdrop-filter: blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+
+  .topbar{
+    max-width:1100px;margin:0 auto;padding:14px 16px;
+    display:flex;gap:12px;align-items:center;justify-content:space-between
+  }
+
+  .title h1{margin:0;font-size:26px;letter-spacing:.2px}
+  .title p{margin:2px 0 0;color:var(--muted);font-size:16px}
+
+  .right{display:flex;gap:10px;align-items:center}
+
+  .adminLink{
+    border:1px solid rgba(216,179,92,.35);
+    background:rgba(216,179,92,.10);
+    color: #ffe9b2;
+    padding:10px 12px;border-radius:999px;font-weight:900;font-size:13px;
+    cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.35);
+    transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .adminLink:hover{background:rgba(216,179,92,.14)}
+  .adminLink:active{transform: translateY(1px)}
+
+  .pill{
+    font-size:12px;
+    color:#ffe9b2;
+    background:rgba(216,179,92,.10);
+    border:1px solid rgba(216,179,92,.35);
+    padding:7px 10px;border-radius:999px;
+    white-space:nowrap;font-weight:900;
+  }
+
+  main{max-width:1100px;margin:0 auto;padding:18px 16px 90px}
+  .grid{display:grid;gap:14px}
+
+  .section{
+    background:
+      radial-gradient(900px 260px at 10% 0%, rgba(216,179,92,.09), transparent 60%),
+      linear-gradient(180deg, var(--card), var(--card2));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow: var(--shadow);
+  }
+
+  .section h2{
+    margin:0 0 10px;
+    font-size:26px;               /* TÍTULO GRANDE */
+    letter-spacing:.2px;
+    color:#ffe9b2;
+  }
+
+  .items{display:grid;gap:10px}
+
+  .item{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:12px 12px;
+    display:grid;grid-template-columns: 1fr auto;
+    gap:12px;align-items:center;
+    background:
+      radial-gradient(800px 220px at 10% 0%, rgba(216,179,92,.10), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  }
+
+  .info .name{
+    font-weight:900;margin:0 0 4px;
+    font-size:17px;
+    color: #f6f7ff;
+  }
+  .info .desc{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
+
+  .controls{display:flex;align-items:center;gap:10px}
+
+  .stepper{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(0,0,0,.25);
+    border:1px solid var(--line);
+    padding:6px;border-radius:999px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.35);
+  }
+  .stepper button{
+    width:36px;height:36px;border-radius:999px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.04);
+    color:#ffe9b2;
+    cursor:pointer;font-weight:1000;font-size:18px;line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition: transform .08s ease, background .15s ease, border-color .15s ease;
+    user-select:none;
+  }
+  .stepper button:hover{background:rgba(216,179,92,.10);border-color:rgba(216,179,92,.35)}
+  .stepper button:active{transform: translateY(1px)}
+  .stepper button:disabled{opacity:.45;cursor:not-allowed}
+  .stepper .q{
+    min-width:24px;text-align:center;font-weight:1000;font-size:14px;
+    color:#f2f4ff
+  }
+
+  .btn{
+    border:0;border-radius:999px;padding:10px 12px;cursor:pointer;
+    font-weight:1000;font-size:14px;
+    transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+    user-select:none;
+  }
+  .btn:active{transform: translateY(1px)}
+
+  .btn-add{
+     background: linear-gradient(180deg, #d6b15a, #b8923a);
+  color:#1a1405;
+  box-shadow: 0 14px 30px rgba(201,162,77,.35);
+  font-weight: 900;
+  }
+  .btn-add:hover{box-shadow: 0 22px 45px rgba(216,179,92,.26)}
+
+  .btn-ghost{
+    background:rgba(216,179,92,.12);
+    color:#ffe9b2;
+    border:1px solid rgba(216,179,92,.25);
+  }
+
+  .muted{color:var(--muted);font-size:13px}
+  .empty{color:var(--muted);font-style:italic;padding:6px 0}
+
+  /* Floating cart */
+  .fab{
+    position:fixed;right:16px;bottom:16px;z-index:20;
+   background: linear-gradient(180deg, #d6b15a, #b8923a);
+  color:#1a1405;
+    border:0;border-radius:999px;
+    padding:14px 16px;font-weight:1000;font-size:15px;cursor:pointer;
+    box-shadow: 0 24px 55px rgba(216,179,92,.20);
+    display:flex;align-items:center;gap:10px;
+  }
+  .count{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:26px;height:26px;border-radius:999px;
+    background:#1a1405;
+  color:#d6b15a;
+    border:1px solid rgba(255,255,255,.10);
+    font-weight:1000;padding:0 8px;
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed;left:50%;bottom:92px;transform:translateX(-50%);
+    background:rgba(18,21,32,.92);
+    color:#ffe9b2;
+    border:1px solid rgba(216,179,92,.28);
+    padding:10px 12px;border-radius:999px;
+    font-weight:900;font-size:13px;
+    display:none;align-items:center;gap:8px;
+    box-shadow: 0 25px 70px rgba(0,0,0,.55);
+    z-index:40;
+    max-width: min(520px, calc(100% - 24px));
+  }
+  .toast.show{display:flex;animation: pop .16s ease-out}
+  @keyframes pop{
+    from{transform:translateX(-50%) translateY(8px);opacity:0}
+    to{transform:translateX(-50%) translateY(0);opacity:1}
+  }
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:30}
+  .modal{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(720px, calc(100% - 24px));max-height: calc(100% - 24px);
+    overflow:auto;
+    background:linear-gradient(180deg, var(--card), var(--card2));
+    border:1px solid var(--line);
+    border-radius:22px;display:none;z-index:31;
+    box-shadow: 0 40px 120px rgba(0,0,0,.70);
+  }
+
+  .modal header{
+    position:sticky;top:0;
+    background:rgba(10,12,18,.78);
+    border-bottom:1px solid var(--line);
+    backdrop-filter: blur(12px)
+  }
+  .modal .head{padding:14px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .modal .head h3{margin:0;font-size:16px;color:#ffe9b2}
+  .modal .body{padding:14px}
+  .cart-list{display:grid;gap:10px;margin-bottom:12px}
+
+  .cart-row{
+    border:1px solid var(--line);
+    border-radius:16px;padding:12px;
+    display:grid;grid-template-columns: 1fr auto;gap:10px;align-items:center;
+    background:rgba(255,255,255,.03);
+  }
+  .cart-row .n{font-weight:1000;margin:0 0 3px;color:#f2f4ff}
+  .cart-row .d{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
+
+  /* Cart group titles + seleção de bebidas */
+  .cart-group-title{
+    margin:14px 0 8px;
+    font-size:12px;
+    letter-spacing:.35px;
+    text-transform:uppercase;
+    color:#ffe9b2;
+    opacity:.92;
+  }
+  .assign{
+    margin-top:8px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    border:1px solid rgba(216,179,92,.30);
+    background:rgba(216,179,92,.10);
+    color:#ffe9b2;
+    padding:8px 10px;
+    border-radius:999px;
+    font-weight:900;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .chip:hover{ background:rgba(216,179,92,.14); }
+  .chip:active{ transform: translateY(1px); }
+
+  .qty{display:flex;gap:8px;align-items:center}
+  .qty button{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.04);
+    color:#ffe9b2;
+    border-radius:14px;
+    width:44px;height:42px;font-size:18px;font-weight:1000;cursor:pointer
+  }
+  .qty .q{min-width:26px;text-align:center;font-weight:1000;color:#f2f4ff}
+
+  textarea{
+    width:100%;min-height:96px;resize:vertical;padding:12px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(0,0,0,.18);
+    color:#f2f4ff;
+    outline:none;font-size:14px;line-height:1.35;
+  }
+  textarea::placeholder{color:rgba(242,244,255,.55)}
+  textarea:focus{
+    border-color: rgba(216,179,92,.40);
+  }
+
+  @keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.item.added {
+  animation: pulse .25s ease-out;
+}
+
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:12px}
+  .btn-primary{background: linear-gradient(180deg, #d6b15a, #b8923a);
+  color:#1a1405;}
+  .btn-close{
+    background:rgba(255,255,255,.05);
+    color:#f2f4ff;
+    border:1px solid var(--line);
+  }
+  .btn-danger{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,110,110,.35);
+    color:#ffb3b3;
+  }
+  .note{margin:10px 0 0;color:var(--muted);font-size:12px}
+/* ===== Segmento (Bebidas: Café/Almoço) ===== */
+.cart-group-title{
+  margin:14px 0 8px;
+  font-size:14px;
+  font-weight:1000;
+  color:#ffe9b2;
+  letter-spacing:.2px;
+}
+.seg{
+  display:inline-flex;
+  gap:6px;
+  padding:6px;
+  border-radius:999px;
+  border:1px solid rgba(216,179,92,.28);
+  background:rgba(0,0,0,.18);
+}
+.seg button{
+  border:1px solid transparent;
+  background:rgba(255,255,255,.04);
+  color:#ffe9b2;
+  border-radius:999px;
+  padding:8px 10px;
+  font-weight:1000;
+  font-size:12px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.seg button.active{
+  background: linear-gradient(180deg, #d6b15a, #b8923a);
+  color:#1a1405;
+  border-color: rgba(255,255,255,.10);
+}
+.seg button:active{transform: translateY(1px)}
+.seg-hint{
+  margin:8px 0 0;
+  font-size:12px;
+  color:rgba(242,244,255,.68);
+}
+
+
+/* =========================
+   RESPONSIVO PADRÃO (MOBILE FIRST)
+   + melhora Segmento Café/Almoço
+   Cole no FINAL do <style>
+========================= */
+
+/* Evita overflow geral em telas pequenas */
+html, body { overflow-x: hidden; }
+
+/* Header: quebra bem no mobile */
+@media (max-width: 600px){
+  .topbar{
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 12px;
+  }
+  .right{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .adminLink{
+    flex: 1 1 100%;
+    justify-content: center;
+    padding: 10px 12px;
+  }
+  .pill{
+    flex: 1 1 100%;
+    text-align: center;
+  }
+  .title h1{ font-size: 20px; }
+  .title p{ font-size: 13px; }
+}
+
+/* Cards do menu: empilha controle no mobile e não estoura */
+@media (max-width: 600px){
+  main{ padding: 14px 12px 100px; }
+
+  .section{ padding: 12px; }
+  .section h2{ font-size: 22px; }
+
+  .item{
+    grid-template-columns: 1fr; /* empilha */
+    gap: 12px;
+  }
+
+  .info .name{
+    font-size: 16px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .info .desc{
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Controles: stepper + botão em coluna (padrão) */
+  .controls{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr; /* stepper em cima, botão embaixo */
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .stepper{
+    width: 100%;
+    justify-content: space-between;
+    padding: 6px 8px;
+  }
+  .stepper button{
+    width: 42px;
+    height: 42px;
+  }
+  .stepper .q{
+    min-width: 32px;
+    font-size: 15px;
+  }
+
+  .btn-add{
+    width: 100%;
+    height: 46px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* Carrinho flutuante vira barra embaixo */
+  .fab{
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: calc(100% - 24px);
+    border-radius: 16px;
+    justify-content: space-between;
+    padding: 14px 14px;
+  }
+
+  .toast{ bottom: 84px; }
+  .modal{
+    width: calc(100% - 16px);
+    border-radius: 16px;
+  }
+}
+
+/* Carrinho (modal): row quebra bem no mobile */
+@media (max-width: 520px){
+  .cart-row{
+    grid-template-columns: 1fr;   /* empilha nome/desc e qty */
+    gap: 10px;
+  }
+  .qty{
+    justify-content: space-between;
+    width: 100%;
+  }
+  .qty button{
+    width: 46px;
+    height: 44px;
+  }
+}
+
+/* =========================
+   SEGMENTO "Café da Manhã / Almoço"
+   (mais separado e padrão)
+========================= */
+
+/* Tira duplicidade visual do título (mantém o último padrão) */
+.cart-group-title{
+  margin: 14px 0 8px;
+  font-size: 13px;
+  font-weight: 1000;
+  color: #ffe9b2;
+  letter-spacing: .2px;
+  text-transform: none; /* mais “padrão” */
+  opacity: .95;
+}
+
+/* Segmento com mais “respiro” */
+.seg{
+  display: inline-flex;
+  gap: 14px;              /* <<< MAIS SEPARADO */
+  padding: 8px;           /* <<< MAIS ESPAÇO */
+  border-radius: 999px;
+  border: 1px solid rgba(216,179,92,.28);
+  background: rgba(0,0,0,.18);
+}
+
+/* Botões do segmento mais “padrão” e clicáveis */
+.seg button{
+  padding: 10px 14px;     /* maior área */
+  font-size: 12px;
+  min-width: 132px;       /* <<< SEPARA VISUALMENTE */
+  border-radius: 999px;
+}
+
+/* No mobile: vira 2 botões do mesmo tamanho, bem espaçados */
+@media (max-width: 520px){
+  .seg{
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;            /* mantém espaço */
+    padding: 8px;
+  }
+  .seg button{
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+  }
+  .seg-hint{
+    margin-top: 6px;
+    font-size: 12px;
+  }
+}
+
+</style>
+
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="title">
+        <h1>Cardápio do Dia</h1>
+        <p id="sub">Carregando…</p>
+      </div>
+
+      <div class="right">
+        <a class="adminLink" href="./admin.html">Área do Administrador</a>
+        <div class="pill" id="pillDate">—</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="menuRoot"></div>
+  </main>
+
+  <button class="fab" id="openCartBtn" aria-label="Abrir carrinho">
+    Carrinho <span class="count" id="cartCount">0</span>
+  </button>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="modal" id="modal">
+    <header>
+      <div class="head">
+        <h3>Seu carrinho</h3>
+        <button class="btn btn-close" id="closeCartBtn">Fechar</button>
+      </div>
+    </header>
+    <div class="body">
+      <div class="cart-list" id="cartList"></div>
+
+      <label for="obs" class="muted" style="display:block;margin:8px 0 6px;font-weight:900">Observações</label>
+      <textarea id="obs" placeholder="Observações: sem cebola, tirar pimenta, bem passado…"></textarea>
+
+      <div class="actions">
+        <button class="btn btn-danger" id="clearCartBtn" type="button">Limpar carrinho</button>
+        <button class="btn btn-primary" id="finishBtn" type="button">Finalizar no WhatsApp</button>
+      </div>
+      <p class="note">Ao finalizar, o WhatsApp abrirá com sua mensagem pronta para enviar.</p>
+    </div>
+  </div>
+
+  <script type="module">
+  import { firebaseConfig } from './firebase-config.js';
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getFirestore, doc, getDoc, collection, getDocs, query, where, orderBy, limit
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { documentId } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // --- Helpers ---
+  const TZ = "America/Bahia";
+  const fmtFull = (d) => new Intl.DateTimeFormat("pt-BR", { timeZone: TZ, dateStyle: "full" }).format(d);
+
+  const ymdToday = () => {
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year:"numeric", month:"2-digit", day:"2-digit" }).formatToParts(new Date());
+    const get = (t) => parts.find(p => p.type === t)?.value;
+    return `${get("year")}-${get("month")}-${get("day")}`;
+  };
+
+  function prettyBR(ymd){
+    const [y,m,d] = String(ymd||"").split("-");
+    if (!y || !m || !d) return String(ymd||"");
+    return `${d}/${m}/${y}`;
+  }
+
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  function normalizeStr(s){
+    return String(s||"")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g,"")
+      .toLowerCase()
+      .trim();
+  }
+
+  // Buckets (para separar bebidas por refeição sem precisar duplicar item no Firestore)
+  const CART_BREAKFAST = "breakfast";
+  const CART_LUNCH = "lunch";
+  const CART_PENDING = "pending"; // quando usuário selecionou café e almoço e ainda não escolheu pra qual refeição a bebida é
+
+  // Chave no carrinho:
+  // - itens normais: "<itemId>"
+  // - bebidas: "<itemId>::<bucket>"
+  const keyFor = (itemId, bucket) => bucket ? `${itemId}::${bucket}` : String(itemId);
+  const parseKey = (k) => {
+    const [id, bucket] = String(k).split("::");
+    return { id, bucket: bucket || null };
+  };
+
+  const state = {
+    todayId: ymdToday(),
+    menuDateId: null,
+    categories: [],
+    itemsById: new Map(),
+    todaysItemIds: [],
+    whatsappNumber: null,
+    cart: new Map(), // key -> qty (ver keyFor)
+  };
+
+  const els = {
+    sub: document.getElementById("sub"),
+    pillDate: document.getElementById("pillDate"),
+    menuRoot: document.getElementById("menuRoot"),
+    openCartBtn: document.getElementById("openCartBtn"),
+    closeCartBtn: document.getElementById("closeCartBtn"),
+    overlay: document.getElementById("overlay"),
+    modal: document.getElementById("modal"),
+    cartCount: document.getElementById("cartCount"),
+    cartList: document.getElementById("cartList"),
+    obs: document.getElementById("obs"),
+    finishBtn: document.getElementById("finishBtn"),
+    clearCartBtn: document.getElementById("clearCartBtn"),
+    toast: document.getElementById("toast"),
+  };
+
+  // Toast (manter como já funciona)
+  let toastTimer = null;
+  function showToast(text){
+    els.toast.textContent = text;
+    els.toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove("show"), 1400);
+  }
+
+  // Persist carrinho local (cliente)
+  const CART_KEY = "premium_menu_cart_v2"; // v2 por causa das bebidas (key com ::bucket)
+  const OBS_KEY = "premium_menu_obs_v1";
+  function loadLocal() {
+    try {
+      const raw = localStorage.getItem(CART_KEY);
+      if (raw) {
+        const obj = JSON.parse(raw);
+        state.cart = new Map(Object.entries(obj).map(([k,v]) => [k, Number(v)]));
+      }
+      const obs = localStorage.getItem(OBS_KEY);
+      if (obs) els.obs.value = obs;
+    } catch {}
+    updateCartUI();
+  }
+  function saveLocal() {
+    const obj = {};
+    for (const [k, qty] of state.cart.entries()) obj[k] = qty;
+    localStorage.setItem(CART_KEY, JSON.stringify(obj));
+    localStorage.setItem(OBS_KEY, els.obs.value || "");
+  }
+
+  // Modal
+  function openCart() {
+    els.overlay.style.display = "block";
+    els.modal.style.display = "block";
+    updateCartUI();
+  }
+  function closeCart() {
+    els.overlay.style.display = "none";
+    els.modal.style.display = "none";
+    saveLocal();
+  }
+  els.openCartBtn.addEventListener("click", openCart);
+  els.closeCartBtn.addEventListener("click", closeCart);
+  els.overlay.addEventListener("click", closeCart);
+
+  // ---------- Classificação (café / almoço / bebidas) ----------
+  function getCategoryById(catId){
+    return state.categories.find(c => c.id === catId) || null;
+  }
+
+  function classifyCategoryName(name){
+    const n = normalizeStr(name);
+    const hasBebida = n.includes("bebida") || n.includes("bebidas") || n.includes("drink");
+    const hasCafe = n.includes("cafe");
+    const hasAlmoco = n.includes("almoco");
+
+    // Se a categoria já diz "Bebidas - Café", classifica direto para evitar pergunta
+    if (hasBebida) {
+      if (hasCafe && !hasAlmoco) return { type:"beverage", forcedBucket: CART_BREAKFAST };
+      if (hasAlmoco && !hasCafe) return { type:"beverage", forcedBucket: CART_LUNCH };
+      return { type:"beverage", forcedBucket: null }; // precisa escolher se tiver café e almoço
+    }
+
+    if (hasCafe) return { type:"meal", meal: CART_BREAKFAST };
+    if (hasAlmoco) return { type:"meal", meal: CART_LUNCH };
+    return { type:"other" };
+  }
+
+  function isBeverageItem(item){
+    const cat = getCategoryById(item.categoryId);
+    const c = classifyCategoryName(cat?.name || "");
+    return c.type === "beverage";
+  }
+
+  function getMealForItem(item){
+    const cat = getCategoryById(item.categoryId);
+    const c = classifyCategoryName(cat?.name || "");
+    if (c.type === "meal") return c.meal;
+    return null;
+  }
+
+  function getForcedBeverageBucket(item){
+    const cat = getCategoryById(item.categoryId);
+    const c = classifyCategoryName(cat?.name || "");
+    if (c.type !== "beverage") return null;
+    return c.forcedBucket || null;
+  }
+
+  function cartHasMeal(meal){
+    // olha os itens do carrinho e vê se existe algum item que pertence àquela refeição
+    for (const [k, qty] of state.cart.entries()) {
+      if (qty <= 0) continue;
+      const { id, bucket } = parseKey(k);
+      if (bucket) continue; // bebidas
+      const it = state.itemsById.get(id);
+      if (!it) continue;
+      if (getMealForItem(it) === meal) return true;
+    }
+    return false;
+  }
+
+  function defaultBeverageBucket(item){
+    // Se a categoria já força o bucket (ex.: "Bebidas - Café"), usa e pronto
+    const forced = getForcedBeverageBucket(item);
+    if (forced) return forced;
+
+    const hasBreakfast = cartHasMeal(CART_BREAKFAST);
+    const hasLunch = cartHasMeal(CART_LUNCH);
+
+    if (hasBreakfast && hasLunch) return CART_PENDING;        // precisa escolher no carrinho
+    if (hasBreakfast) return CART_BREAKFAST;
+    if (hasLunch) return CART_LUNCH;
+
+    // Se ainda não escolheu refeição nenhuma, deixa "pendente"
+    return CART_PENDING;
+  }
+
+  // ---------- Cart operations ----------
+  function getQty(itemId){
+    // soma todas as entradas desse item (inclusive bebidas em buckets diferentes)
+    let total = 0;
+    for (const [k, qty] of state.cart.entries()) {
+      if (qty <= 0) continue;
+      const { id } = parseKey(k);
+      if (id === String(itemId)) total += qty;
+    }
+    return total;
+  }
+
+  function setKeyQty(key, qty){
+    if (qty <= 0) state.cart.delete(key);
+    else state.cart.set(key, qty);
+  }
+
+  function addToCart(itemId, delta = 1) {
+    const item = state.itemsById.get(String(itemId));
+    if (!item) return;
+
+    // bebidas: usa bucket calculado
+    if (isBeverageItem(item)) {
+      const bucket = defaultBeverageBucket(item);
+      const k = keyFor(itemId, bucket);
+      const qty = (state.cart.get(k) || 0) + delta;
+      setKeyQty(k, qty);
+    } else {
+      const k = keyFor(itemId, null);
+      const qty = (state.cart.get(k) || 0) + delta;
+      setKeyQty(k, qty);
+    }
+
+    updateCartUI();
+    saveLocal();
+    syncStepper(String(itemId));
+  }
+
+  function clearCart() {
+    state.cart.clear();
+    updateCartUI();
+    saveLocal();
+    document.querySelectorAll("[data-stepper]").forEach(el => {
+      const qEl = el.querySelector("[data-q]");
+      const minus = el.querySelector("[data-minus]");
+      if (qEl) qEl.textContent = "0";
+      if (minus) minus.disabled = true;
+    });
+  }
+  els.clearCartBtn.addEventListener("click", clearCart);
+  els.obs.addEventListener("input", saveLocal);
+
+  function cartTotalCount() {
+    let c = 0;
+    for (const qty of state.cart.values()) c += (Number(qty) || 0);
+    return c;
+  }
+
+  // Move bebida de "pendente" para café/almoço (sem alert)
+  function assignPendingBeverage(itemId, toBucket){
+    const fromKey = keyFor(itemId, CART_PENDING);
+    const q = state.cart.get(fromKey) || 0;
+    if (q <= 0) return;
+
+    state.cart.delete(fromKey);
+    const toKey = keyFor(itemId, toBucket);
+    state.cart.set(toKey, (state.cart.get(toKey) || 0) + q);
+
+    updateCartUI();
+    saveLocal();
+  }
+
+  // Render do carrinho com grupos e seletor de bebidas
+  function updateCartUI() {
+    els.cartCount.textContent = String(cartTotalCount());
+    els.cartList.innerHTML = "";
+
+    if (state.cart.size === 0) {
+      els.cartList.innerHTML = `<p class="empty">Seu carrinho está vazio.</p>`;
+      return;
+    }
+
+    // Monta listas
+    const groups = {
+      breakfast: [],
+      lunch: [],
+      beveragesBreakfast: [],
+      beveragesLunch: [],
+      beveragesPending: [],
+      others: [],
+    };
+
+    for (const [k, qty] of state.cart.entries()) {
+      if (!qty || qty <= 0) continue;
+      const { id, bucket } = parseKey(k);
+      const item = state.itemsById.get(id);
+      if (!item) continue;
+
+      if (bucket) {
+        if (bucket === CART_BREAKFAST) groups.beveragesBreakfast.push({ item, qty, key: k, bucket });
+        else if (bucket === CART_LUNCH) groups.beveragesLunch.push({ item, qty, key: k, bucket });
+        else groups.beveragesPending.push({ item, qty, key: k, bucket });
+        continue;
+      }
+
+      const meal = getMealForItem(item);
+      if (meal === CART_BREAKFAST) groups.breakfast.push({ item, qty, key: k });
+      else if (meal === CART_LUNCH) groups.lunch.push({ item, qty, key: k });
+      else groups.others.push({ item, qty, key: k });
+    }
+
+    const hasBreakfast = groups.breakfast.length > 0;
+    const hasLunch = groups.lunch.length > 0;
+
+    function renderTitle(txt){
+      const t = document.createElement("div");
+      t.className = "cart-group-title";
+      t.textContent = txt;
+      els.cartList.appendChild(t);
+    }
+
+    function renderRow(rowData, opts={}){
+      const { item, qty, key } = rowData;
+
+      const row = document.createElement("div");
+      row.className = "cart-row";
+
+      const left = document.createElement("div");
+      left.innerHTML = `
+        <p class="n">${escapeHtml(item.name)}</p>
+        ${item.description ? `<p class="d">${escapeHtml(item.description)}</p>` : ""}
+      `;
+
+      const right = document.createElement("div");
+      right.className = "qty";
+      right.innerHTML = `
+        <button data-dec>−</button>
+        <div class="q">${qty}</div>
+        <button data-inc>+</button>
+      `;
+
+      right.querySelector("[data-dec]").onclick = () => {
+        setKeyQty(key, qty - 1);
+        updateCartUI();
+        saveLocal();
+        syncStepper(item.id);
+        showToast(`Removido 1x • ${item.name}`);
+      };
+      right.querySelector("[data-inc]").onclick = () => {
+        setKeyQty(key, qty + 1);
+        updateCartUI();
+        saveLocal();
+        syncStepper(item.id);
+        showToast(`Adicionado ao carrinho 1x • ${item.name}`);
+      };
+
+      row.appendChild(left);
+      row.appendChild(right);
+      els.cartList.appendChild(row);
+
+      if (opts.pendingBeverage === true && hasBreakfast && hasLunch) {
+        const wrap = document.createElement("div");
+        wrap.style.margin = "8px 0 0";
+        wrap.style.display = "flex";
+        wrap.style.justifyContent = "flex-end";
+
+        const seg = document.createElement("div");
+        seg.className = "seg";
+
+        const b1 = document.createElement("button");
+        b1.type = "button";
+        b1.textContent = "Café da Manhã";
+        b1.onclick = () => assignPendingBeverage(item.id, CART_BREAKFAST);
+
+        const b2 = document.createElement("button");
+        b2.type = "button";
+        b2.textContent = "Almoço";
+        b2.onclick = () => assignPendingBeverage(item.id, CART_LUNCH);
+
+        seg.appendChild(b1);
+        seg.appendChild(b2);
+        wrap.appendChild(seg);
+
+        const hint = document.createElement("div");
+        hint.className = "seg-hint";
+        hint.textContent = "Selecione para qual refeição esta bebida é.";
+
+        els.cartList.appendChild(wrap);
+        els.cartList.appendChild(hint);
+      }
+    }
+
+    const sortByName = (a,b) => a.item.name.localeCompare(b.item.name, "pt-BR");
+    groups.breakfast.sort(sortByName);
+    groups.lunch.sort(sortByName);
+    groups.beveragesBreakfast.sort(sortByName);
+    groups.beveragesLunch.sort(sortByName);
+    groups.beveragesPending.sort(sortByName);
+    groups.others.sort(sortByName);
+
+    if (groups.breakfast.length){ renderTitle("Café da Manhã"); groups.breakfast.forEach(r=>renderRow(r)); }
+    if (groups.lunch.length){ renderTitle("Almoço"); groups.lunch.forEach(r=>renderRow(r)); }
+
+    if (groups.beveragesBreakfast.length){ renderTitle("Bebidas • Café da Manhã"); groups.beveragesBreakfast.forEach(r=>renderRow(r)); }
+    if (groups.beveragesLunch.length){ renderTitle("Bebidas • Almoço"); groups.beveragesLunch.forEach(r=>renderRow(r)); }
+    if (groups.beveragesPending.length){ renderTitle("Bebidas • Definir refeição"); groups.beveragesPending.forEach(r=>renderRow(r,{pendingBeverage:true})); }
+
+    if (groups.others.length){ renderTitle("Outros"); groups.others.forEach(r=>renderRow(r)); }
+  }
+
+  // sincroniza o stepper do cardápio para um item (mostra total)
+  function syncStepper(itemId){
+    const step = document.querySelector(`[data-stepper="${CSS.escape(itemId)}"]`);
+    if (!step) return;
+    const qEl = step.querySelector("[data-q]");
+    const minus = step.querySelector("[data-minus]");
+    const qty = getQty(itemId);
+    if (qEl) qEl.textContent = String(qty);
+    if (minus) minus.disabled = qty <= 0;
+  }
+
+  // WhatsApp message (profissional + dividido)
+  function greetingByHour(){
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, hour:"2-digit", hour12:false }).formatToParts(new Date());
+    const hh = Number(parts.find(p=>p.type==="hour")?.value || "12");
+    if (hh >= 5 && hh < 12) return "Bom dia";
+    if (hh >= 12 && hh < 18) return "Boa tarde";
+    return "Boa noite";
+  }
+
+  function hasPendingBeverages(){
+    for (const [k, qty] of state.cart.entries()) {
+      if (!qty || qty <= 0) continue;
+      const { bucket } = parseKey(k);
+      if (bucket === CART_PENDING) return true;
+    }
+    return false;
+  }
+
+  function buildMessage() {
+    const g = greetingByHour();
+    const dateLabel = state.menuDateId ? prettyBR(state.menuDateId) : prettyBR(state.todayId);
+
+    const breakfast = [];
+    const lunch = [];
+    const bevB = [];
+    const bevL = [];
+    const others = [];
+
+    for (const [k, qty] of state.cart.entries()) {
+      if (!qty || qty <= 0) continue;
+      const { id, bucket } = parseKey(k);
+      const item = state.itemsById.get(id);
+      if (!item) continue;
+
+      if (bucket === CART_BREAKFAST) { bevB.push({ item, qty }); continue; }
+      if (bucket === CART_LUNCH) { bevL.push({ item, qty }); continue; }
+      if (bucket === CART_PENDING) { continue; } // não deixa finalizar sem definir
+
+      const meal = getMealForItem(item);
+      if (meal === CART_BREAKFAST) breakfast.push({ item, qty });
+      else if (meal === CART_LUNCH) lunch.push({ item, qty });
+      else others.push({ item, qty });
+    }
+
+    const sortByName = (a,b) => a.item.name.localeCompare(b.item.name, "pt-BR");
+    breakfast.sort(sortByName); lunch.sort(sortByName); bevB.sort(sortByName); bevL.sort(sortByName); others.sort(sortByName);
+
+    const lines = [];
+    lines.push(`${g}! 👋`);
+    lines.push(`Gostaria de fazer um pedido (${dateLabel}):`);
+    lines.push("");
+
+    const pushSection = (title, arr) => {
+      if (!arr.length) return;
+      lines.push(`*${title}*`);
+      for (const { item, qty } of arr) lines.push(`• ${qty}x ${item.name}`);
+      lines.push("");
+    };
+
+    pushSection("Café da Manhã", breakfast);
+    pushSection("Almoço", lunch);
+    pushSection("Bebidas (Café da Manhã)", bevB);
+    pushSection("Bebidas (Almoço)", bevL);
+    pushSection("Outros", others);
+
+    const obs = (els.obs.value || "").trim();
+    if (obs) {
+      lines.push("*Observações*");
+      lines.push(obs);
+      lines.push("");
+    }
+
+    lines.push("Obrigado!");
+    return lines.join("\n");
+  }
+
+  function openWhatsApp() {
+    if (state.cart.size === 0) {
+      showToast("Seu carrinho está vazio.");
+      return;
+    }
+    if (hasPendingBeverages()) {
+      openCart();
+      showToast("Defina para qual refeição é a(s) bebida(s).");
+      return;
+    }
+    if (!state.whatsappNumber) {
+      showToast("WhatsApp não configurado.");
+      return;
+    }
+
+    const msg = buildMessage();
+    const url = `https://wa.me/${encodeURIComponent(state.whatsappNumber)}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+  }
+  els.finishBtn.addEventListener("click", openWhatsApp);
+
+  // --- Firestore loading ---
+  const DEFAULT_WA = "5571988682935";
+
+  async function loadWhatsAppSetting() {
+    const ref = doc(db, "settings", "public");
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const v = (snap.data().whatsappNumber || "").replace(/\D/g, "");
+      state.whatsappNumber = v || DEFAULT_WA;
+    } else {
+      state.whatsappNumber = DEFAULT_WA;
+    }
+  }
+
+  async function loadCategories() {
+    const qy = query(collection(db, "categories"), orderBy("order", "asc"));
+    const snap = await getDocs(qy);
+    state.categories = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(c => c.active === true);
+  }
+
+  async function loadDailyMenuIdsWithFallback() {
+    const todayId = state.todayId;
+
+    const todaySnap = await getDoc(doc(db, "dailyMenus", todayId));
+    if (todaySnap.exists()) {
+      const data = todaySnap.data();
+      state.menuDateId = todayId;
+      state.todaysItemIds = Array.isArray(data.itemIds) ? data.itemIds : [];
+      return;
+    }
+
+    const recentSnap = await getDocs(
+      query(collection(db, "dailyMenus"), orderBy("date", "desc"), limit(60))
+    );
+
+    let chosen = null;
+    for (const d of recentSnap.docs) {
+      const data = d.data();
+      const date = (data.date || d.id || "").trim();
+      if (date && date <= todayId) { chosen = { id: d.id, data, date }; break; }
+    }
+
+    if (!chosen) {
+      state.menuDateId = null;
+      state.todaysItemIds = [];
+      return;
+    }
+
+    state.menuDateId = chosen.date || chosen.id;
+    state.todaysItemIds = Array.isArray(chosen.data.itemIds) ? chosen.data.itemIds : [];
+  }
+
+  async function loadItemsByIds(ids) {
+    state.itemsById.clear();
+    if (!ids.length) return;
+
+    const chunkSize = 30;
+    for (let i=0;i<ids.length;i+=chunkSize) {
+      const chunk = ids.slice(i, i+chunkSize);
+      const qy = query(collection(db, "items"), where(documentId(), "in", chunk));
+      const snap = await getDocs(qy);
+      for (const d of snap.docs) {
+        state.itemsById.set(d.id, { id: d.id, ...d.data() });
+      }
+    }
+  }
+
+  function renderMenu() {
+    els.menuRoot.innerHTML = "";
+
+    if (!state.todaysItemIds.length) {
+      const box = document.createElement("div");
+      box.className = "section";
+      box.innerHTML = `<h2>Hoje</h2><p class="empty">Ainda não há cardápio publicado.</p>`;
+      els.menuRoot.appendChild(box);
+      return;
+    }
+
+    for (const cat of state.categories) {
+      const items = state.todaysItemIds
+        .map(id => state.itemsById.get(id))
+        .filter(it => it && it.active === true && it.categoryId === cat.id)
+        .sort((a,b) => (a.order ?? 9999) - (b.order ?? 9999));
+
+      if (!items.length) continue;
+
+      const sec = document.createElement("section");
+      sec.className = "section";
+      sec.innerHTML = `<h2>${escapeHtml(cat.name)}</h2>`;
+
+      const list = document.createElement("div");
+      list.className = "items";
+
+      for (const it of items) {
+        const row = document.createElement("div");
+        row.className = "item";
+
+        const left = document.createElement("div");
+        left.className = "info";
+
+        const name = document.createElement("p");
+        name.className = "name";
+        name.textContent = it.name;
+        left.appendChild(name);
+
+        if (it.description) {
+          const desc = document.createElement("p");
+          desc.className = "desc";
+          desc.textContent = it.description;
+          left.appendChild(desc);
+        }
+
+        const controls = document.createElement("div");
+        controls.className = "controls";
+
+        const step = document.createElement("div");
+        step.className = "stepper";
+        step.setAttribute("data-stepper", it.id);
+
+        const minus = document.createElement("button");
+        minus.textContent = "−";
+        minus.setAttribute("data-minus", "1");
+        minus.addEventListener("click", () => {
+          addToCart(it.id, -1);
+          showToast(`Removido 1x • ${it.name}`);
+        });
+
+        const q = document.createElement("div");
+        q.className = "q";
+        q.setAttribute("data-q", "1");
+        q.textContent = String(getQty(it.id));
+
+        const plus = document.createElement("button");
+        plus.textContent = "+";
+        plus.addEventListener("click", () => {
+          addToCart(it.id, 1);
+          showToast(`Adicionado ao carrinho 1x • ${it.name}`);
+        });
+
+        step.appendChild(minus);
+        step.appendChild(q);
+        step.appendChild(plus);
+
+        const btn = document.createElement("button");
+        btn.className = "btn btn-add";
+        btn.textContent = "Adicionar ao carrinho";
+        btn.addEventListener("click", () => {
+          addToCart(it.id, 1);
+          showToast(`Adicionado ao carrinho 1x • ${it.name}`);
+        });
+
+        controls.appendChild(step);
+        controls.appendChild(btn);
+
+        row.appendChild(left);
+        row.appendChild(controls);
+        list.appendChild(row);
+
+        syncStepper(it.id);
+      }
+
+      sec.appendChild(list);
+      els.menuRoot.appendChild(sec);
+    }
+  }
+
+  async function boot() {
+    els.sub.textContent = fmtFull(new Date());
+
+    loadLocal();
+
+    try {
+      await loadWhatsAppSetting();
+      await loadCategories();
+      await loadDailyMenuIdsWithFallback();
+
+      if (state.menuDateId) {
+        els.pillDate.textContent = prettyBR(state.menuDateId);
+        if (state.menuDateId !== state.todayId) {
+          els.sub.textContent = `Mostrando o último cardápio publicado (${prettyBR(state.menuDateId)})`;
+        }
+      } else {
+        els.pillDate.textContent = "—";
+      }
+
+      await loadItemsByIds(state.todaysItemIds);
+      renderMenu();
+      updateCartUI();
+    } catch (e) {
+      console.error(e);
+      els.menuRoot.innerHTML = `
+        <div class="section">
+          <h2>Ops</h2>
+          <p class="empty">Não foi possível carregar o cardápio agora.</p>
+          <p class="muted" style="margin-top:8px">Detalhe: ${escapeHtml(String(e?.message || e))}</p>
+        </div>`;
+    }
+  }
+
+  boot();
+</script>
+</body>
+</html>

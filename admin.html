@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#60646c; --line:#e7e7ee;
+      --brand:#2f3cff; --soft:#fafbff; --radius:16px; --brandSoft:#f0f2ff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text)}
+    header{background:#fff;border-bottom:1px solid var(--line)}
+    .bar{max-width:1100px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    h1{margin:0;font-size:16px}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:14px}
+    @media(min-width:980px){ .wrap{grid-template-columns: 360px 1fr} }
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+    .card h2{margin:0 0 10px;font-size:14px}
+    label{display:block;margin:10px 0 6px;font-size:13px;color:#2a2f5f;font-weight:700}
+    input, select{
+      width:100%;padding:10px 12px;border-radius:12px;border:1px solid #dcdcea;background:#fff;
+      font-size:14px;outline:none;
+    }
+    input:focus, select:focus{border-color:#9aa7ff;box-shadow:0 0 0 3px rgba(90,110,255,.15)}
+    .row{display:flex;gap:10px;align-items:center}
+    .btn{
+      border:0;border-radius:12px;padding:10px 12px;cursor:pointer;
+      font-weight:800;font-size:14px;
+    }
+    .primary{background:var(--brand);color:#fff}
+    .ghost{background:var(--brandSoft);color:#2a2f5f}
+    .danger{background:#fff;border:1px solid #f1c0c0;color:#8d1b1b}
+    .muted{color:var(--muted);font-size:12px;line-height:1.35}
+    .list{display:grid;gap:10px}
+    .tile{
+      border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--soft);
+      display:grid;gap:8px;
+    }
+    .tile .top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .tile .name{font-weight:900}
+    textarea{
+      width:100%;min-height:70px;resize:vertical;padding:10px 12px;border-radius:12px;border:1px solid #dcdcea;
+      font-size:14px;outline:none;
+    }
+    .hidden{display:none}
+    .sep{height:1px;background:var(--line);margin:12px 0}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px}
+  
+  /* ====== RESPONSIVO (ADMIN) ====== */
+
+/* Tablets */
+@media (max-width: 980px) {
+  .bar { flex-wrap: wrap; }
+  .bar .row { width: 100%; justify-content: space-between; }
+
+  .wrap { grid-template-columns: 1fr; } /* força 1 coluna */
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+  .bar { padding: 12px; gap: 10px; }
+  h1 { font-size: 15px; }
+
+  .wrap { padding: 12px; }
+  .card { padding: 12px; }
+
+  .row { flex-wrap: wrap; }
+  .row .btn { width: 100%; } /* botões grandes e fáceis de clicar */
+
+  .tile .top{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  input, select, textarea { font-size: 16px; } /* evita zoom automático no iPhone */
+}
+
+
+/* ===== AJUSTE FINO RESPONSIVO (ADMIN) ===== */
+
+@media (max-width: 600px) {
+
+  /* Garante que listas não passem da tela */
+  .list, .tile {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Checklist do publicar cardápio */
+  #publishList label {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  #publishList label > div {
+    max-width: calc(100% - 34px);
+  }
+
+  #publishList .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+  }
+
+  #publishList .muted {
+    font-size: 12px;
+  }
+
+  /* Evita texto “vazando” */
+  .tile, .card {
+    overflow: hidden;
+  }
+}
+
+
+/* ===== CHECKLIST PADRONIZADO (ADMIN) ===== */
+
+.publish-item{
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.publish-item:first-child{
+  border-top: 0;
+}
+
+.publish-item input[type="checkbox"]{
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.publish-item .name{
+  font-weight: 800;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.publish-item .desc{
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+  
+  
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <h1>Admin • Cardápio Premium</h1>
+      <div class="row">
+        <span class="muted" id="who">Deslogado</span>
+        <button class="btn ghost hidden" id="logoutBtn">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LEFT: Login + Settings + Publish -->
+    <section class="card" id="leftCol">
+      <div id="loginBox">
+        <h2>Login (Admin)</h2>
+        <label>Email</label>
+        <input id="email" type="email" placeholder="admin@exemplo.com"/>
+        <label>Senha</label>
+        <input id="pass" type="password" placeholder="••••••••"/>
+        <div class="row" style="margin-top:12px">
+          <button class="btn primary" id="loginBtn">Entrar</button>
+        </div>
+        <p class="muted" style="margin-top:10px">
+          Use Firebase Auth (Email/Senha). O cliente final não faz login.
+        </p>
+      </div>
+
+      <div id="adminBox" class="hidden">
+        <h2>Configurações</h2>
+        <label>Número do WhatsApp (com DDI e DDD)</label>
+        <input id="waNumber" placeholder="Ex.: 5571999999999"/>
+        <p class="muted">Apenas dígitos. Ex.: 55 + DDD + número.</p>
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" id="saveSettingsBtn">Salvar WhatsApp</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <h2>Publicar Cardápio</h2>
+        <label>Data</label>
+        <input id="menuDate" type="date" />
+        <p class="muted">Você escolhe a data e marca os itens do dia.</p>
+
+        <label>Selecione itens (marque/desmarque)</label>
+        <div class="list" id="publishList"></div>
+
+        <div class="row" style="margin-top:10px;justify-content:flex-end">
+          <button class="btn primary" id="publishBtn">Publicar / Atualizar</button>
+        </div>
+
+        <p class="muted" style="margin-top:10px">
+          Dica: se você não publicar um dia, o cliente pode continuar vendo o último cardápio (isso é configurado no index.html).
+        </p>
+      </div>
+    </section>
+
+    <!-- RIGHT: Manage -->
+    <section class="card">
+      <div id="manageLocked">
+        <h2>Gerenciamento</h2>
+        <p class="muted">Faça login para gerenciar categorias e itens.</p>
+      </div>
+
+      <div id="manageBox" class="hidden">
+        <h2>Categorias</h2>
+
+        <!-- SIMPLES: só nome -->
+        <div class="tile">
+          <label>Nome da categoria</label>
+          <input id="catName" placeholder="Ex.: Café da Manhã"/>
+
+          <div class="row" style="justify-content:flex-end;margin-top:10px">
+            <button class="btn primary" id="addCatBtn">Salvar categoria</button>
+          </div>
+          <p class="muted">A ordem é automática. A categoria fica ativa por padrão.</p>
+        </div>
+
+        <div class="list" id="catList" style="margin-top:10px"></div>
+
+        <div class="sep"></div>
+
+        <h2>Itens</h2>
+
+        <!-- SIMPLES: nome + categoria + descrição -->
+        <div class="tile">
+          <label>Nome do item</label>
+          <input id="itemName" placeholder="Ex.: Ovos mexidos"/>
+
+          <label>Descrição curta (opcional)</label>
+          <textarea id="itemDesc" placeholder="Ex.: bem temperado, com cheiro-verde"></textarea>
+
+          <label>Categoria</label>
+          <select id="itemCat"></select>
+
+          <div class="row" style="justify-content:space-between;margin-top:10px;flex-wrap:wrap">
+            <button class="btn ghost" id="seedBeveragesBtn" type="button">Criar Bebidas fixas</button>
+            <button class="btn primary" id="addItemBtn">Salvar item</button>
+          </div>
+
+          <p class="muted">Ordem automática dentro da categoria. Item fica ativo por padrão.</p>
+        </div>
+
+        <div class="list" id="itemList" style="margin-top:10px"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { firebaseConfig } from './firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore, doc, setDoc, getDoc, collection, addDoc, updateDoc, deleteDoc,
+      getDocs, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const els = {
+      who: document.getElementById("who"),
+      logoutBtn: document.getElementById("logoutBtn"),
+
+      loginBox: document.getElementById("loginBox"),
+      adminBox: document.getElementById("adminBox"),
+      manageLocked: document.getElementById("manageLocked"),
+      manageBox: document.getElementById("manageBox"),
+
+      email: document.getElementById("email"),
+      pass: document.getElementById("pass"),
+      loginBtn: document.getElementById("loginBtn"),
+
+      waNumber: document.getElementById("waNumber"),
+      saveSettingsBtn: document.getElementById("saveSettingsBtn"),
+
+      menuDate: document.getElementById("menuDate"),
+      publishList: document.getElementById("publishList"),
+      publishBtn: document.getElementById("publishBtn"),
+
+      catName: document.getElementById("catName"),
+      addCatBtn: document.getElementById("addCatBtn"),
+      catList: document.getElementById("catList"),
+
+      itemName: document.getElementById("itemName"),
+      itemDesc: document.getElementById("itemDesc"),
+      itemCat: document.getElementById("itemCat"),
+      addItemBtn: document.getElementById("addItemBtn"),
+      itemList: document.getElementById("itemList"),
+      seedBeveragesBtn: document.getElementById("seedBeveragesBtn"),
+    };
+
+    // Default date = today (YYYY-MM-DD) (Bahia)
+    const TZ = "America/Bahia";
+    function ymdToday() {
+      const parts = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year:"numeric", month:"2-digit", day:"2-digit" }).formatToParts(new Date());
+      const get = (t) => parts.find(p => p.type === t)?.value;
+      return `${get("year")}-${get("month")}-${get("day")}`;
+    }
+
+    // Data calendário + bloqueio dias passados
+    els.menuDate.type = "date";
+    els.menuDate.value = ymdToday();
+    els.menuDate.min = ymdToday();
+    els.menuDate.addEventListener("input", () => {
+      const min = els.menuDate.min;
+      if (els.menuDate.value && els.menuDate.value < min) els.menuDate.value = min;
+    });
+
+    const state = {
+      categories: [],
+      items: [],
+      dailySelected: new Set(),
+    };
+
+    // Auth
+    els.loginBtn.addEventListener("click", async () => {
+      try {
+        await signInWithEmailAndPassword(auth, els.email.value.trim(), els.pass.value);
+      } catch (e) {
+        alert("Falha no login. Verifique email/senha.");
+        console.error(e);
+      }
+    });
+    els.logoutBtn.addEventListener("click", () => signOut(auth));
+
+    onAuthStateChanged(auth, async (user) => {
+      const logged = !!user;
+      els.who.textContent = logged ? user.email : "Deslogado";
+      els.logoutBtn.classList.toggle("hidden", !logged);
+      els.loginBox.classList.toggle("hidden", logged);
+      els.adminBox.classList.toggle("hidden", !logged);
+      els.manageLocked.classList.toggle("hidden", logged);
+      els.manageBox.classList.toggle("hidden", !logged);
+
+      if (logged) {
+        await loadSettings();
+        await refreshAll();
+      }
+    });
+
+    // Settings
+    const DEFAULT_WA = "5571988682935";
+
+    async function loadSettings() {
+      const ref = doc(db, "settings", "public");
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        const v = (snap.data().whatsappNumber || "").replace(/\D/g, "");
+        els.waNumber.value = v || DEFAULT_WA;
+      } else {
+        els.waNumber.value = DEFAULT_WA;
+      }
+    }
+
+    els.saveSettingsBtn.addEventListener("click", async () => {
+      const digits = (els.waNumber.value || "").replace(/\D/g, "");
+      await setDoc(doc(db, "settings", "public"), { whatsappNumber: digits }, { merge: true });
+      alert("WhatsApp salvo.");
+    });
+
+    // Categories
+    async function loadCategories() {
+      const snap = await getDocs(query(collection(db, "categories"), orderBy("order","asc")));
+      state.categories = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    }
+
+    function renderCategories() {
+      els.catList.innerHTML = "";
+      if (!state.categories.length) {
+        els.catList.innerHTML = `<p class="muted">Nenhuma categoria ainda.</p>`;
+        return;
+      }
+
+      for (const c of state.categories) {
+        const div = document.createElement("div");
+        div.className = "tile";
+
+        div.innerHTML = `
+          <div class="top">
+            <div>
+              <div class="name">${escapeHtml(c.name || "")}</div>
+              <div class="muted">Ativa: ${c.active ? "sim" : "não"} • ordem: ${c.order ?? ""}</div>
+            </div>
+            <span class="pill">Categoria</span>
+          </div>
+          <div class="row" style="gap:10px;flex-wrap:wrap">
+            <button class="btn ghost" data-edit>Editar</button>
+            <button class="btn danger" data-del>Excluir</button>
+          </div>
+        `;
+
+        div.querySelector("[data-edit]").addEventListener("click", async () => {
+          const name = prompt("Nome da categoria:", c.name || "");
+          if (name === null) return;
+
+          // opcional (só se precisar)
+          const active = confirm("Categoria ATIVA? (OK = Sim / Cancelar = Não)");
+
+          await updateDoc(doc(db, "categories", c.id), {
+            name: name.trim(),
+            active
+          });
+          await refreshAll();
+        });
+
+        div.querySelector("[data-del]").addEventListener("click", async () => {
+          if (!confirm("Excluir categoria?")) return;
+          await deleteDoc(doc(db, "categories", c.id));
+          await refreshAll();
+        });
+
+        els.catList.appendChild(div);
+      }
+    }
+
+    els.addCatBtn.addEventListener("click", async () => {
+      const name = (els.catName.value || "").trim();
+      if (!name) return alert("Nome é obrigatório.");
+
+      // ordem automática (última + 1)
+      const maxOrder = Math.max(0, ...state.categories.map(c => Number(c.order || 0)));
+      const order = maxOrder + 1;
+
+      await addDoc(collection(db, "categories"), { name, order, active: true });
+      els.catName.value = "";
+      await refreshAll();
+    });
+
+    function renderCategorySelect() {
+      els.itemCat.innerHTML = "";
+      for (const c of state.categories.filter(c => c.active !== false)) {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        els.itemCat.appendChild(opt);
+      }
+    }
+
+    // Items
+    async function loadItems() {
+      const snap = await getDocs(query(collection(db, "items"), orderBy("order","asc")));
+      state.items = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    }
+
+    function renderItems() {
+      els.itemList.innerHTML = "";
+      if (!state.items.length) {
+        els.itemList.innerHTML = `<p class="muted">Nenhum item ainda.</p>`;
+        return;
+      }
+
+      for (const it of state.items) {
+        const cat = state.categories.find(c => c.id === it.categoryId);
+
+        const div = document.createElement("div");
+        div.className = "tile";
+
+        div.innerHTML = `
+          <div class="top">
+            <div>
+              <div class="name">${escapeHtml(it.name || "")}</div>
+              ${it.description ? `<div class="muted">${escapeHtml(it.description || "")}</div>` : ``}
+              <div class="muted">Categoria: ${escapeHtml(cat?.name || "—")} • Ativo: ${it.active ? "sim" : "não"}</div>
+            </div>
+            <span class="pill">Item</span>
+          </div>
+          <div class="row" style="gap:10px;flex-wrap:wrap">
+            <button class="btn ghost" data-edit>Editar</button>
+            <button class="btn danger" data-del>Excluir</button>
+          </div>
+        `;
+
+        div.querySelector("[data-edit]").addEventListener("click", async () => {
+          const name = prompt("Nome:", it.name || "");
+          if (name === null) return;
+
+          const desc = prompt("Descrição (opcional):", it.description || "");
+          if (desc === null) return;
+
+          const active = confirm("Item ATIVO? (OK = Sim / Cancelar = Não)");
+
+          // Mantém mesma categoria por simplicidade (se quiser mudar, eu faço um seletor depois)
+          await updateDoc(doc(db, "items", it.id), {
+            name: name.trim(),
+            description: (desc || "").trim(),
+            active
+          });
+          await refreshAll();
+        });
+
+        div.querySelector("[data-del]").addEventListener("click", async () => {
+          if (!confirm("Excluir item?")) return;
+          await deleteDoc(doc(db, "items", it.id));
+          state.dailySelected.delete(it.id);
+          await refreshAll();
+        });
+
+        els.itemList.appendChild(div);
+      }
+    }
+
+    els.addItemBtn.addEventListener("click", async () => {
+      const name = (els.itemName.value || "").trim();
+      if (!name) return alert("Nome é obrigatório.");
+
+      const description = (els.itemDesc.value || "").trim();
+      const categoryId = els.itemCat.value;
+
+      // ordem automática dentro da categoria (último + 1)
+      const maxOrderInCat = Math.max(
+        0,
+        ...state.items.filter(i => i.categoryId === categoryId).map(i => Number(i.order || 0))
+      );
+      const order = maxOrderInCat + 1;
+
+      await addDoc(collection(db, "items"), {
+        name,
+        description,
+        categoryId,
+        order,
+        active: true
+      });
+
+      els.itemName.value = "";
+      els.itemDesc.value = "";
+      await refreshAll();
+    });
+
+    // Publish daily menu
+    async function loadDailySelection() {
+      state.dailySelected.clear();
+      const dateId = (els.menuDate.value || "").trim();
+      if (!dateId) return;
+
+      const snap = await getDoc(doc(db, "dailyMenus", dateId));
+      if (snap.exists()) {
+        const ids = snap.data().itemIds || [];
+        for (const id of ids) state.dailySelected.add(id);
+      }
+    }
+
+    function renderPublishChecklist() {
+      els.publishList.innerHTML = "";
+      if (!state.items.length) {
+        els.publishList.innerHTML = `<p class="muted">Crie itens para poder publicar o cardápio.</p>`;
+        return;
+      }
+
+      const catsSorted = [...state.categories]
+        .filter(c => c.active !== false)
+        .sort((a,b) => (a.order??9999)-(b.order??9999));
+
+      for (const cat of catsSorted) {
+        const group = document.createElement("div");
+        group.className = "tile";
+        group.innerHTML = `<div class="name">${escapeHtml(cat.name || "")}</div>`;
+
+        const list = document.createElement("div");
+        list.className = "list";
+
+        const items = state.items
+          .filter(it => it.categoryId === cat.id)
+          .filter(it => it.active === true)
+          .sort((a,b) => (a.order??9999)-(b.order??9999));
+
+        if (!items.length) {
+          const p = document.createElement("p");
+          p.className = "muted";
+          p.textContent = "Sem itens nessa categoria.";
+          group.appendChild(p);
+        } else {
+          for (const it of items) {
+            const row = document.createElement("div");
+row.className = "publish-item";
+
+const cb = document.createElement("input");
+cb.type = "checkbox";
+cb.checked = state.dailySelected.has(it.id);
+
+cb.addEventListener("change", () => {
+  if (cb.checked) state.dailySelected.add(it.id);
+  else state.dailySelected.delete(it.id);
+});
+
+const txt = document.createElement("div");
+txt.innerHTML = `
+  <div class="name">${escapeHtml(it.name || "")}</div>
+  ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ""}
+`;
+
+row.appendChild(cb);
+row.appendChild(txt);
+list.appendChild(row);
+
+          }
+          group.appendChild(list);
+        }
+
+        els.publishList.appendChild(group);
+      }
+    }
+
+    els.menuDate.addEventListener("change", async () => {
+      await loadDailySelection();
+      renderPublishChecklist();
+    });
+
+    els.publishBtn.addEventListener("click", async () => {
+      const dateId = (els.menuDate.value || "").trim();
+      if (!dateId) return alert("Informe a data.");
+
+      const activeIds = [...state.dailySelected].filter(id => {
+        const it = state.items.find(x => x.id === id);
+        return it && it.active === true;
+      });
+
+      await setDoc(doc(db, "dailyMenus", dateId), {
+        date: dateId,
+        itemIds: activeIds
+      }, { merge: true });
+
+      alert("Cardápio publicado/atualizado.");
+    });
+
+    // Seed beverages (fixas, mas editáveis)
+    const FIXED_BEVERAGES = [
+      "Refrigerante",
+      "Suco",
+      "Café preto",
+      "Café com leite",
+      "Café com leite em pó",
+      "Água sem gás",
+      "Água com gás"
+    ];
+
+    els.seedBeveragesBtn.addEventListener("click", async () => {
+      const bebidas = state.categories.find(c => (c.name || "").toLowerCase().trim() === "bebidas");
+      if (!bebidas) return alert("Crie uma categoria chamada 'Bebidas' primeiro.");
+
+      const existingNames = new Set(state.items.map(i => (i.name||"").toLowerCase().trim()));
+
+      // ordem automática no fim da categoria
+      let order = Math.max(
+        0,
+        ...state.items.filter(i => i.categoryId === bebidas.id).map(i => Number(i.order || 0))
+      ) + 1;
+
+      for (const name of FIXED_BEVERAGES) {
+        const key = name.toLowerCase().trim();
+        if (existingNames.has(key)) continue;
+
+        await addDoc(collection(db, "items"), {
+          name,
+          description: "",
+          categoryId: bebidas.id,
+          order,
+          active: true
+        });
+        order++;
+      }
+
+      alert("Bebidas fixas criadas (as que já existiam foram ignoradas).");
+      await refreshAll();
+    });
+
+    async function refreshAll() {
+      await loadCategories();
+      await loadItems();
+      renderCategories();
+      renderItems();
+      renderCategorySelect();
+      await loadDailySelection();
+      renderPublishChecklist();
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+  </script>
+</body>
+</html>
